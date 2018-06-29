@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <link rel="shortcut icon" href="./icon.svg" type="image/svg+xml">
@@ -20,18 +21,141 @@
   <meta name="msapplication-TileImage" content="./icons/mipmap-xxhdpi/ic_launcher.png">
   <link rel="manifest" href="./manifest.json">
   <title>Get Journals | ashinzekene</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :focus {
+      outline: none;
+    }
+
+    html,
+    body {
+      padding: 0;
+      font-size: 16px;
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+    }
+
+    body,
+    .container {
+      display: flex;
+      width: 100vw;
+      height: 100vh;
+      flex-wrap: wrap;
+    }
+
+    .container>* {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+
+    .top-section {
+      height: 40%;
+      padding: 20px;
+      background-color: #1268FF;
+      color: white;
+    }
+
+    .top-section>* {
+      width: 100%;
+      text-align: center;
+    }
+
+    .top-section h1 {
+      font-size: 4rem;
+      font-variant-caps: titling-caps;
+    }
+
+    .top-section div {
+      font-size: 1.6rem;
+    }
+
+    .bottom-section {
+      height: 60%;
+      color: #555555;
+    }
+
+    .bottom-section .form {
+      width: 100%;
+      text-align: center
+    }
+    .bottom-section .form * {
+      border-radius: 30px;
+      font-size: 2rem;
+      border-width: 4px;
+      color: inherit;
+      font-family: inherit;
+      padding: 10px 40px;
+    }
+    .bottom-section .form button {
+      border-color: rgb(0, 20, 134);
+      background-color: #1268FF;
+      color: white;
+    }
+    .download-link {
+      transition: 200ms all;
+      height: unset;
+      font-family: 'Courier New', Courier, monospace;
+      color: black;
+      font-size: 2.2rem;
+      overflow: hidden;
+    }
+    .download-link:empty {
+      height: 0;
+    }
+  </style>
 </head>
+
 <body>
   <div class="container">
     <div class="top-section">
-      <h2>Download journals here</h2>
-      <p>Paste in the DOI of the journal below</p>
+      <h1>Download journals here</h1>
+      <div>Paste in the DOI of the journal below</div>
     </div>
     <div class="bottom-section">
       <div class="form">
-        <input type="text" class="button submit">
+        <input type="text">
+        <button class="submit">Get Link</button>
       </div>
+      <a class="download-link" href=""></a>
     </div>
   </div>
 </body>
+<script>
+  (() => {
+    console.log('____________________________________')
+    let loading = false
+    const button = document.querySelector("button.submit");
+    const input = document.querySelector("input");
+    const link = document.querySelector("a.download-link");
+    const insertLink = (res) => {
+      if (res.url === "Not Found") {
+        console.log("It is a pity");
+      } else {
+        link.href = res.url;
+        link.textContent = res.url;
+      }
+      loading = false
+    }
+    button.onclick = function() {
+      console.log('Clicked')
+      if (loading) return;
+      doi = input.value;
+      if (doi.length < 5) {
+        console.log('Hisss');
+        return;
+      }
+      loading = true;
+      fetch('https://ashinzekene.herokuapp.com/journal?doi='+doi)
+        .then(res => res.json())
+        .then(insertLink);
+    }
+  })();
+</script>
+
 </html>
